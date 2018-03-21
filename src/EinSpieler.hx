@@ -263,7 +263,7 @@ class EinSpieler {
 		}
 
 		if (fx==2 && fy == 2){
-			toDisplayText=S("Meine Schutzhuette gegen Kaelte","My home. My refuge from cold.");
+			toDisplayText=S("Meine Schutzhuette gegen Kaelte.","My home. My refuge from cold.");
 		}
 		
 		if (moverightcount==1){

@@ -63,7 +63,7 @@ class Main {
 			Sound.play("blip3");
 		}
 		
-		Text.display(Text.CENTER,70,S("Steurung:\noben, links, rechts","Controls:\nUp, Left, Right"), PAL.titelFarbe);
+		Text.display(Text.CENTER,70,S("Steuerung:\noben, links, rechts","Controls:\nUp, Left, Right"), PAL.titelFarbe);
 
 		Text.size=1;
 		
