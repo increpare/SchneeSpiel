@@ -40,27 +40,31 @@ class Main {
 
 
 		Text.size=GUI.titleTextSize;
-		Text.display(Text.CENTER,h/5+10,S("Spiel des Schnees","Snow Game"), PAL.titelFarbe);
+		Text.display(Text.CENTER,10,S("Spiel des Schnees","Snow Game"), PAL.titelFarbe);
 		
 		if (IMGUI.button( 
 				Text.CENTER,
-				Math.round(h/3+15),
+				Math.round(30),
 				S("SPIEL","PLAY")
 			)) {			
-		mPlayNote(57803926,30.0,1.0,1.0);
+			Sound.play("blip3");
 			Scene.change(EinSpieler);
 		//	Scene.change(szene.CharakterAuswahl);
 		}
 
 		if (IMGUI.schalter( 
 			Text.CENTER,
-			Math.round(h/3+53),
+			Math.round(50),
 		S("DE","DE"),
 		S("EN","EN"),
 		1-state.sprache)){
 			state.sprache=1-state.sprache;
 			Save.savevalue("language",state.sprache);
+			Sound.play("blip3");
 		}
+		
+		Text.display(Text.CENTER,70,S("Steurung:\noben, links, rechts","Controls:\nUp, Left, Right"), PAL.titelFarbe);
+
 		Text.size=1;
 		
 	}

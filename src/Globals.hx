@@ -18,13 +18,13 @@ class Globals
 
   public static var PAL = {
       fg : Col.BLACK,   
-      bg : Col.WHITE,
+      bg : 0xD7D7D7,
 
       buttonTextCol : Col.BLACK,
       buttonBorderCol : Col.BLACK,
-      buttonCol : Col.WHITE,
+      buttonCol : 0xD7D7D7,
       buttonHighlightCol : 0x444444,
-      buttonHighlightCol2 : 0xcccccc,
+      buttonHighlightCol2 : 0xaaaaaa,
       titelFarbe: Col.BLACK,
   };
 

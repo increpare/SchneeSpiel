@@ -49,7 +49,34 @@ class EinSpieler {
 		todo = todo.substring(1);
 	}
 
+	var particlesx : Array<Int>;
+	var particlesy : Array<Int>;
+	var particlesl : Array<Int>;
+
+	var snowLife : Int = 30*3;
+	
+	var particleCount:Int=20;
+
 	function init(){
+		sublimed=false;
+		moverightcount=0;
+
+		particlesx = new Array<Int>();
+		particlesy = new Array<Int>();
+		particlesl = new Array<Int>();
+
+		for (i in 0...particleCount){
+			particlesx.push(Random.int(51,50+57));
+			particlesy.push(Random.int(10,9+57));
+			particlesl.push(Random.int(1,snowLife));
+		}
+		
+		px=2;
+		py=3;
+		pstate=0;
+		erstesZug=true;
+		moverightcount=0;
+
 		trace("called");
 		todo="";
 		score = 0;
@@ -70,96 +97,232 @@ class EinSpieler {
 		}
 	}	
 
-	function update() {		
-		if (done){
+	var pstate=0;
+	var f:Int=0;
+	var px:Int=0;
+	var py:Int=0;
+	var pd:String = "d";
+
+	var snowtimer=0;
+
+
+	//player state things
+	var moverightcount=0;
+	var sublimed:Bool;
+	var erstesZug:Bool;
+
+	function moveTo(tx,ty):Bool{
+		if (sublimed){
+			return false;
+		}
+		if (tx==0 && ty==1){
+			//mach nichts
+			return false;
+		}
+		if (tx==0 && ty==3){
+			//mach nichts
+			return false;
+		}
+		if (tx==2 && ty==2){
+			//mach nichts
+			return false;
+		}
+		if (tx<0 || tx>3 || ty<0 || ty>3){
+			return false;
+		}
+		px=tx;
+		py=ty;
+		Sound.play("blip3");
+		return true;
+	}
+
+	function update() {	
+
+		if (Input.justpressed(Key.ESCAPE)){
+			haxegon.Scene.change(Main);
 			init();
-			done=false;
-		}	
+		}
+
+		if (Input.justpressed(Key.LEFT) &&!sublimed){
+			erstesZug=false;
+			moverightcount=0;
+			switch(pd){
+				case "u": {
+					pd = "l";
+				}
+				case "d": {
+					pd = "r";
+					moverightcount=1;
+				}
+				case "l": {
+					pd = "d";
+				}
+				case "r": {
+					pd = "u";
+				}
+			}
+		}
+
+		if (Input.justpressed(Key.RIGHT) &&!sublimed){
+			erstesZug=false;
+			moverightcount=0;
+			switch(pd){
+				case "u": {
+					pd = "r";
+					moverightcount=1;
+				}
+				case "d": {
+					pd = "l";
+				}
+				case "l": {
+					pd = "u";
+				}
+				case "r": {
+					pd = "d";
+				}
+			}
+		}
+
+		if (Input.justpressed(Key.UP)){
+			erstesZug=false;
+			switch(pd){
+				case "u": {
+					moveTo(px,py-1);
+					moverightcount=0;
+				}
+				case "d": {
+					moveTo(px,py+1);
+					moverightcount=0;
+				}
+				case "l": {
+					moveTo(px-1,py);
+					moverightcount=0;
+				}
+				case "r": {
+					if (moveTo(px+1,py)){
+						moverightcount++;
+						trace(moverightcount);
+						if (moverightcount==4){
+							sublimed=true;
+							particlesx[0]=51+49;
+							particlesy[0]=10+7;
+						}
+					}
+				}
+			}
+		}
+		
 		// Draw a white background		
 		Gfx.clearscreen(PAL.bg);
 
-
-		var h = Gfx.screenheight;
-		var w = Gfx.screenwidth;
-		Text.wordwrap=w;
-
-		var altZeit=zeit;
-		zeit -= 1.0/60.0;
-
-		Text.display(40,h/5,S("Spielstand: ","Score: ")+score, PAL.titelFarbe);
-
-		if (zeit>12){
-			Text.display(Text.CENTER,h/5+25,S("VERSENDEN NUR 1!","SUBMIT ONLY 1's!"), PAL.titelFarbe);				
-		} else if (zeit>11){
-			if (altZeit>12){
-				mPlayNote(57803926,50.0,1.0,1.0);
-			}
-			Text.size=GUI.titleTextSize;
-			Text.display(Text.CENTER,h/5+25,S("Achtung...","Ready..."), PAL.titelFarbe);
-		} else if (zeit>10){
-			if (altZeit>=11){
-				mPlayNote(57803926,50.0,1.0,1.0);
-			}
-			Text.size=GUI.titleTextSize;
-			Text.display(Text.CENTER,h/5+25,S("Fertig...","Steady..."), PAL.titelFarbe);
-		} else if (zeit>9){
-			if (altZeit>=10){
-				mPlayNote(57803926,30.0,1.0,1.0);
-			}
-			Text.size=GUI.titleTextSize;
-			Text.display(Text.CENTER,h/5+25,S("Los!","Go!"), PAL.titelFarbe);
-		} else {			
-			if( Math.floor(zeit)!=Math.floor( altZeit ) ) 
-			{
-				mPlayNote(57803926,20.0,1.0,1.0);			
-			}
+		f++;
+		if (f>60){
+			f=0;
 		}
-		var zs = floatToStringPrecision3(zeit);
-		Text.display(40,h/3+25,S("Zeit: ","Time: ")+zs, PAL.titelFarbe);
-		Text.display(40,h/3+50,todo, PAL.titelFarbe);
-		Text.display(40,h/3+50+16,"^", PAL.titelFarbe);
+		if (f>30){
+			Gfx.drawimage(51, 10,"bg1");
+		}
+		else {
+			Gfx.drawimage(51, 10,"bg2");
+		}
 
-		Text.display(40,h/3+50+2*16,S("X - tauschen","X - switch"), PAL.titelFarbe);
-		Text.display(40,h/3+50+3*16,S("C - versenden","C - submit"), PAL.titelFarbe);
+		var cs = 14;
+		var rpx:Int=51+2 + cs*px;
+		var rpy:Int=10+1 + cs*py;
 
-		Text.size=1;	
+		var tx = Text.CENTER;
+		var ty = 10+57+5;
 		
-		if (zeit<10){
+		var toDisplayText=S("Der Schnee ist wunderscheon.","The snow is beautiful.");
 
-			///
-		//88045 swap
-		//35423 submit
-		//34195 submit 2
-		//99487 bad
-			if (Input.justpressed(Key.X)){
-				mPlayNote(88045,30.0,0.3,1.0);
-				if (todo.charAt(0)=="0"){
-					todo = "1"+todo.substr(1);
-				} else {
-					todo = "0"+todo.substr(1);
-				}
-			}
-			if (Input.justpressed(Key.C)){
-				if (todo.charAt(0)=="1"){
-					mPlayNote(34195,30.0,0.3,1.0);
-					score++;
-				} else {
-					mPlayNote(99487,30.0,0.3,1.0);
-					score--;
-				}
-				pop();
-				push();			
+		var fx = px;
+		var fy = py;
+		switch (pd){
+			case "u": fy--;
+			case "d": fy++;
+			case "l": fx--;
+			case "r": fx++;
+		}
+
+		if (pd=="l"){
+			toDisplayText=S("Der Schnee blendet mich.","I'm blinded by the snow.");
+		}
+
+		if (fx<0 || fx>3 || fy<0 || fy>3){
+			if (!erstesZug){
+				toDisplayText=S("Es gibt keine Grenze zwischen Boden und Himmel.","There's no border between earth and sky.");
 			}
 		}
 
-		if (Input.justpressed(Key.ESCAPE)){	
-			Scene.change(Main);
-			done=true;
+		if (fx==0 && fy == 1){
+			toDisplayText=S("Ein einsamer Baum.","A lonely tree.");
 		}
-		if (zeit<0){	
-			mPlayNote(57803926,30.0,1.0,1.0);		
-			Scene.change(ScoreScreen);
-			done=true;
+
+		if (fx==0 && fy == 3){
+			toDisplayText=S("Das Meer wird nie einfrieren.","The ocean will never freeze.");
 		}
+
+		if (fx==2 && fy == 2){
+			toDisplayText=S("Meine Schutzhuette gegen Kalte","My home. My refuge from cold.");
+		}
+		
+		if (moverightcount==1){
+			toDisplayText=S("Mit dem Schnee zu wandern,","Walking along with the snow,");
+		} else if (moverightcount==2) {
+			toDisplayText=S("sich zur Stroemung seiner gesellen,","drifting along with it,");
+		}  else if (moverightcount==3) {
+			toDisplayText=S("es ist einfach sich vorzustellen,","it is easy to imagine as if...");
+		}  else if (sublimed) {
+			toDisplayText=S("das man selbst eine Schneeflocke sein koennte.","...as if you yourself are a snowflake.");
+		} 
+
+		Text.display(tx,ty,toDisplayText, PAL.titelFarbe);
+		
+		if (!sublimed){
+			Gfx.drawimage(rpx,rpy,pd);
+		}
+
+
+				//tick particles 
+
+		snowtimer++;
+		/*
+		if (snowtimer>10){
+			snowtimer=0;
+			for (i in 0...particleCount){
+				particlesx[i]++;
+				particlesy[i]+=Random.int(-1,1);
+				if (particlesx[i]>50+57){
+					particlesx[i]=50;
+				}
+				if (particlesy[i]<9){
+					particlesy[i]=9+57;
+				}
+				if (particlesy[i]>9+57){
+					particlesy[i]=9;
+				}
+			}
+		}*/
+		for (i in 0...5){
+			var pi = (i+snowtimer*5)%particleCount;
+			particlesx[pi]++;
+			particlesy[pi]+=Random.int(-1,1);
+			if (particlesx[pi]>50+57){
+				particlesx[pi]=51;
+			}
+			if (particlesy[pi]<10){
+				particlesy[pi]=9+57;
+			}
+			if (particlesy[pi]>9+57){
+				particlesy[pi]=10;
+			}
+		}
+
+		for (i in 0...particleCount){
+			var px = particlesx[i];
+			var py = particlesy[i];
+			Gfx.setpixel(px,py,Col.WHITE);
+		}
+
 	}
 }

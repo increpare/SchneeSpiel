@@ -6,6 +6,13 @@ import Globals.*;
 class IMGUI {
 
 	public static function schalter(x,y,text1,text2,selection:Int) {
+		if (selection==0){
+			text1=" "+text1+" ";
+			text2="*"+text2+"*";
+		} else {
+			text1="*"+text1+"*";
+			text2=" "+text2+" ";
+		}
 		var oldtextsize=Text.size;
 		Text.size = GUI.buttonTextSize;
 		
@@ -44,8 +51,8 @@ class IMGUI {
 	  var click = collide && Mouse.leftclick();
 
 	  if (collide){
-	    color=colorhover;
-		lightbgcol = colorhover2;
+	    color=colorhover2;
+		lightbgcol = colorhover;
 	  }
 	  Gfx.fillbox(x,y,width,height,color);
 	  if (selection==0){
