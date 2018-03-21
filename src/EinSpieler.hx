@@ -233,7 +233,7 @@ class EinSpieler {
 		var tx = Text.CENTER;
 		var ty = 10+57+5;
 		
-		var toDisplayText=S("Der Schnee ist wunderscheon.","The snow is beautiful.");
+		var toDisplayText=S("Der Schnee ist wunderschoen.","The snow is beautiful.");
 
 		var fx = px;
 		var fy = py;
@@ -263,7 +263,7 @@ class EinSpieler {
 		}
 
 		if (fx==2 && fy == 2){
-			toDisplayText=S("Meine Schutzhuette gegen Kalte","My home. My refuge from cold.");
+			toDisplayText=S("Meine Schutzhuette gegen Kaelte","My home. My refuge from cold.");
 		}
 		
 		if (moverightcount==1){
